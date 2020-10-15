@@ -1,22 +1,26 @@
 package com.example.instagrampost;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.res.Configuration;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.CompoundButton;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
 
 public class PostActivity extends AppCompatActivity {
 
     Toolbar toolbar;
     TextView share;
     TextView tagPeople, addLocation, advancedSettings;
-    Switch facebookSwitch, twitterSwitch, tumblrSwitch;
+    SwitchCompat facebookSwitch, twitterSwitch, tumblrSwitch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,10 +30,11 @@ public class PostActivity extends AppCompatActivity {
         //setting Toolbar---------------->
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar()!=null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         //Light Status Bar----------->
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
 
         //Share Post Button in Toolbar------------>
@@ -101,5 +106,32 @@ public class PostActivity extends AppCompatActivity {
                 }
             }
         });
+
+        checkMode();
     }
+
+    private void checkMode() {
+        int nightModeFlags = getResources().getConfiguration().uiMode &
+                Configuration.UI_MODE_NIGHT_MASK;
+        switch (nightModeFlags) {
+            case Configuration.UI_MODE_NIGHT_YES:
+                Toast.makeText(PostActivity.this,"Dark mode is On",Toast.LENGTH_LONG).show();
+                break;
+
+            case Configuration.UI_MODE_NIGHT_NO:
+                Toast.makeText(PostActivity.this,"Light mode is On",Toast.LENGTH_LONG).show();
+                doStuff();
+                break;
+
+
+        }
+    }
+
+    private void doStuff() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
+        getWindow().setStatusBarColor(Color.WHITE);
+    }
+
 }
